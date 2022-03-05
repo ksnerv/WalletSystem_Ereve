@@ -15,7 +15,7 @@ namespace WalletSystem_Ereve_Source.Class.BusinessLogicLayer
             using (DAL dal = new DAL())
             {
                 if (!dal.IsConnected) return null;
-                var table = dal.ExecuteQuery("GetAllEmployee").Tables[0];
+                var table = dal.ExecuteQuery("GetAllUsers").Tables[0];
 
                 list = new List<User>();
 
@@ -25,9 +25,11 @@ namespace WalletSystem_Ereve_Source.Class.BusinessLogicLayer
 
                     User user = new User()
                     {
-                        accountNumber = dr.Field<string>("id"),
-                        name = dr.Field<string>("fname")
-                      
+                        accountNumber = dr.Field<int>("account_num"),
+                        name = dr.Field<string>("username"),
+                        password = dr.Field<string>("userpassword"),
+                        registerDate = dr.Field<DateTime>("registration_date")
+
 
                     };
                     list.Add(user);

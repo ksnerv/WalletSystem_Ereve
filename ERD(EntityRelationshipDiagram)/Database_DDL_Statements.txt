@@ -1,0 +1,30 @@
+create table Users
+(
+     account_num INT PRIMARY KEY IDENTITY(1,1),
+     username varchar(25) NOT NULL,  
+     userpassword varchar(25) NOT NULL,  
+     registration_date Date
+
+)
+
+create table TransactionType
+(
+     transactionType_id INT PRIMARY KEY IDENTITY(1,1),
+     transactionType_name varchar(25) NOT NULL,  
+     operation int,
+     CHECK (operation in (1,-1))
+
+)
+
+create table TransactionHistory
+(
+     transactionHistory_id INT PRIMARY KEY IDENTITY(1,1),
+     account_num int FOREIGN KEY REFERENCES Users(account_num) ON DELETE CASCADE,
+     fromTo_account_num int FOREIGN KEY REFERENCES Users(account_num),
+     transactionType_id int FOREIGN KEY REFERENCES TransactionType(transactionType_id) ON DELETE CASCADE,
+     transaction_date SMALLDATETIME,
+     amount decimal
+	 
+
+)
+

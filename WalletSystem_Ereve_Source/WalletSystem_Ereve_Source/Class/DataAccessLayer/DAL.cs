@@ -18,7 +18,7 @@ namespace WalletSystem_Ereve_Source.Class.DataAccessLayer
         public DAL()
         {
             sqlConn = new SqlConnection();
-            sqlConn.ConnectionString = serverName+"; Integrated Security = True; Database = "+databaseName;
+            sqlConn.ConnectionString = "Server="+ serverName + "; Integrated Security = True; Database = " + databaseName;
 
             IsConnected = false;
             try
