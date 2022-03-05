@@ -102,7 +102,8 @@ namespace WalletSystem_Ereve_Source
             {
                 Console.Clear();
                 Console.WriteLine("Wallet System");
-                Console.WriteLine("User: " + loggedUser.name);
+                Console.WriteLine("User: " + loggedUser.name +"   Balance: "+ User_BLL.GetUserEndingBalance(loggedUser));
+                Console.WriteLine("Account Number: "+loggedUser.accountNumber.ToString("D12"));
                 Console.WriteLine("\nPress [1] Deposit");
                 Console.WriteLine("Press [2] Withdraw");
                 Console.WriteLine("Press [3] Transfer");
@@ -127,27 +128,41 @@ namespace WalletSystem_Ereve_Source
             }
         }
 
-        
+
 
         private static void Transact(int transactionType_id)
         {
             Console.WriteLine("Wallet System");
             Console.WriteLine("User: " + loggedUser.name);
-        
+
 
             Console.Write("Please enter the Amount: ");
             var amount = Console.ReadLine();
 
-            
 
-           // decimal convertedAmount;
+
+            // decimal convertedAmount;
             try
             {
                 var convertedAmount = Decimal.Parse(amount);
                 int convertedTargetAccount;
 
                 User targetUser = null;
-                
+
+              
+                if (transactionType_id == 2|| transactionType_id == 3)
+                {
+                    var balance = User_BLL.GetUserEndingBalance(loggedUser);
+
+                    //if trying to withdrw/send amount that exceeds the current balance, return
+                    if((balance-convertedAmount)<0)
+                    {
+                        Console.WriteLine("Insufficient Funds!");
+                        Console.ReadKey();
+                        return;
+                    }
+                }
+               
 
                 if (transactionType_id.Equals(3))
                 {
@@ -194,7 +209,7 @@ namespace WalletSystem_Ereve_Source
                         //save first the transaction for the owner of the account
                         if (TransactionHistory_BLL.SaveTransaction(transaction))
                         {
-                            //if the owner of the account sent money to other after succesfully updating the trarnsaction history of the ownner
+                            //if the owner of the account sent money to other, after succesfully updating the trarnsaction history of the ownner
                             // also update the history of the recepient
                             var transaction_recepientSide = new TransactionHistory()
                             {
@@ -253,7 +268,7 @@ namespace WalletSystem_Ereve_Source
                     Console.Write(" on " + trans.date.ToString());
                 }
 
-                decimal endingBalance = history.Sum(o => o.amount*o.trans_type.operation);
+                decimal endingBalance = User_BLL.GetUserEndingBalance(loggedUser);
                 Console.WriteLine("\n\n\nEnding Balance: " + endingBalance);
             }
             else

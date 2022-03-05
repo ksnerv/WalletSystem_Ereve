@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 using WalletSystem_Ereve_Source.Class.DataAccessLayer;
 using WalletSystem_Ereve_Source.Class.Model;
@@ -73,7 +74,16 @@ namespace WalletSystem_Ereve_Source.Class.BusinessLogicLayer
 
             }
         }
+        public static decimal GetUserEndingBalance(User user)
+        {
+            var transactions = TransactionHistory_BLL.GetUserTransactionHistory(user);
+            decimal ending_balance = 0;
+            if(transactions!=null)
+                ending_balance = transactions.Sum(o => o.amount * o.trans_type.operation);
 
+            return ending_balance;
+
+        }
         public static bool CheckUserExist(int account_num)
         {
             bool result = false;
