@@ -44,7 +44,7 @@ namespace WalletSystem_Ereve_Source.Class.BusinessLogicLayer
 
         }
 
-        internal static bool SaveUser(User newUser)
+        public static bool SaveUser(User newUser)
         {
             using (DAL dal = new DAL())
             {
