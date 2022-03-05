@@ -7,11 +7,11 @@ namespace WalletSystem_Ereve_Source
 {
     class Program
     {
-       
+        static User loggedUser;
         static void Main(string[] args)
         {
 
-            while(true)
+            while (true)
             {
                 Console.Clear();
                 Console.WriteLine("Wallet System\n");
@@ -21,17 +21,17 @@ namespace WalletSystem_Ereve_Source
                 Console.WriteLine("Press [0] Exit");
                 var input = Console.ReadKey();
                 Console.Clear();
-                switch(input.KeyChar)
+                switch (input.KeyChar)
                 {
                     case '1': Login();
                         break;
                     case '2': Register();
                         break;
                     case '0': return;
-                      
+
                 }
 
-                
+
 
             }
 
@@ -53,23 +53,99 @@ namespace WalletSystem_Ereve_Source
                 registerDate = DateTime.Now
             };
 
-            if(User_BLL.SaveUser(newUser))
+            if (User_BLL.SaveUser(newUser))
             {
                 //saved successfully
                 Console.WriteLine("Saved Successfully!!");
-                
+
             }
             else
             {
                 Console.WriteLine("Error saving!");
             }
             Console.ReadKey();
-            
+
         }
 
         private static void Login()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Wallet System\n");
+            Console.WriteLine("User Login\n");
+            Console.Write("Username: ");
+            var name = Console.ReadLine();
+            Console.Write("Password: ");
+            var password = Console.ReadLine();
+
+            loggedUser = User_BLL.Login(name, password);
+            if (loggedUser != null)
+            {
+                Console.WriteLine("Login Successfully!");
+                Console.WriteLine("Welcome " + loggedUser.name + "!");
+                Console.ReadKey();
+                UserPage();
+            }
+            else
+            {
+                Console.WriteLine("User not found!");
+                Console.ReadKey();
+            }
+
+
+           
+        }
+
+        private static void UserPage()
+        {
+
+            while (loggedUser != null)
+            {
+                Console.Clear();
+                Console.WriteLine("Wallet System");
+                Console.WriteLine("User: " + loggedUser.name);
+                Console.WriteLine("\nPress [1] Deposit");
+                Console.WriteLine("Press [2] Withdraw");
+                Console.WriteLine("Press [3] Transfer");
+                Console.WriteLine("Press [4] View Transaction History");
+                Console.WriteLine("Press [0] Logout");
+                var input = Console.ReadKey();
+                Console.Clear();
+                switch (input.KeyChar)
+                {
+                    case '1':
+                        break;
+                    case '2':                     
+                        break;
+                    case '3':
+                        break;
+                    case '4': ViewTransactionHistory();
+                        break;
+                    case '0': loggedUser = null;
+                        break;
+
+                }
+            }
+        }
+
+        private static void ViewTransactionHistory()
+        {
+            Console.WriteLine("Wallet System");
+            Console.WriteLine("User: " + loggedUser.name);
+            Console.WriteLine("\nTransaction History\n");
+            var history = TransactionHistory_BLL.GetUserTransactionHistory(loggedUser);
+            if(history != null)
+            {
+                
+                foreach(TransactionHistory trans in history)
+                {
+                    Console.WriteLine(trans.trans_type.name + " " + trans.amount + " on " + trans.date.ToString());
+                }
+            }
+            else
+            {
+                Console.WriteLine("Empty Transaction!");
+            }
+
+            Console.ReadKey();
         }
     }
 }

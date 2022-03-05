@@ -11,5 +11,6 @@ namespace WalletSystem_Ereve_Source.Class.Model
         public string password { get; set; }
         public decimal balance { get; set; }
         public  DateTime registerDate { get; set; }
+        public List<TransactionHistory> transactionHistory { get; set; }
     }
 }

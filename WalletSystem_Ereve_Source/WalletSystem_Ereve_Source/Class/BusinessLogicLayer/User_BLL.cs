@@ -71,5 +71,17 @@ namespace WalletSystem_Ereve_Source.Class.BusinessLogicLayer
 
             }
         }
+
+        internal static User Login(string name, string password)
+        {
+            var users = GetAllUsers();
+            User foundUser = null;
+            if(users != null)
+            {
+                foundUser = users.Find(o => o.name == name && o.password == password);
+            }
+
+            return foundUser;
+        }
     }
 }
