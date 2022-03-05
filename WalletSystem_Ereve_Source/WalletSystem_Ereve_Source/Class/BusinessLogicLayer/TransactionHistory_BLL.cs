@@ -23,13 +23,18 @@ namespace WalletSystem_Ereve_Source.Class.BusinessLogicLayer
                 list = new List<TransactionHistory>();
                 foreach (DataRow dr in table.AsEnumerable())
                 {
-                    
+                    User otherUser = null;
+                    if(!dr.IsNull("fromTo_account_num"))
+                    {
+                        otherUser = new User() { accountNumber = dr.Field<int>("fromTo_account_num") };
+                    }
 
                     var transaction = new TransactionHistory()
                     {
                         id = dr.Field<int>("transactionHistory_id"),
                         owner = user,
-                       // other_user = otherUser,
+                        other_user = otherUser,
+                     
                        
                         trans_type = new TransactionType()
                         {
@@ -48,6 +53,38 @@ namespace WalletSystem_Ereve_Source.Class.BusinessLogicLayer
             }
 
             return (list.Count > 0) ? list : null;
+        }
+
+        public static bool SaveTransaction(TransactionHistory transaction)
+        {
+            using (DAL dal = new DAL())
+            {
+                if (!dal.IsConnected) return false;
+
+
+                SqlParameter[] param = { new  SqlParameter("@account_num",transaction.owner.accountNumber),
+                                         new  SqlParameter("@fromTo_account_num",(transaction.other_user!=null) ? transaction.other_user.accountNumber : (object)DBNull.Value),
+                                         new  SqlParameter("@transactionType_id", transaction.trans_type.id),
+                                         new  SqlParameter("@date", transaction.date),
+                                         new  SqlParameter("@amount", transaction.amount)
+
+                                       };
+
+                try
+                {
+                    dal.ExecuteNonQuery("SaveTransaction", param);
+                    return true; //saved successfully
+                }
+                catch (Exception ex)
+                {
+                    //inspect ex.Message
+                    string error = ex.Message;
+                    return false;
+                }
+
+
+
+            }
         }
     }
 }

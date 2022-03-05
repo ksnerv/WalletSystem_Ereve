@@ -10,9 +10,11 @@ namespace WalletSystem_Ereve_Source.Class.BusinessLogicLayer
 {
     public class User_BLL
     {
+      
         public static List<User> GetAllUsers()
         {
             List<User> list = null;
+          
             using (DAL dal = new DAL())
             {
                 if (!dal.IsConnected) return null;
@@ -72,6 +74,17 @@ namespace WalletSystem_Ereve_Source.Class.BusinessLogicLayer
             }
         }
 
+        public static bool CheckUserExist(int account_num)
+        {
+            bool result = false;
+
+            var users = GetAllUsers();
+            if (users != null)
+            {
+                result = users.Exists(o => o.accountNumber == account_num);
+            }
+            return result;
+        }
         internal static User Login(string name, string password)
         {
             var users = GetAllUsers();
